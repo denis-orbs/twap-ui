@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box, styled } from "@mui/system";
+import { useWeb3React } from "@web3-react/core";
+import "./App.css";
+import { injected } from "./connectors";
+import Twap from "./twap/Twap";
 
 function App() {
+  const { library, activate, account, deactivate } = useWeb3React();
+
+  const onConnectClick = () => {
+    activate(injected);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StyledApp className="App">
+      {account ? (
+        <div>
+          <p>{account}</p>
+          <button onClick={deactivate}>Disconnect</button>
+        </div>
+      ) : (
+        <button onClick={onConnectClick}>Connect</button>
+      )}
+      <StyledTwap>
+        <Twap provider={library} />
+      </StyledTwap>
+    </StyledApp>
   );
 }
 
 export default App;
+
+const StyledTwap = styled(Box)({
+  width: 400
+});
+
+
+
+const StyledApp = styled(Box)({
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center',
+  flexDirection:'column',
+  height: '100vh',
+  gap: 49
+})
